@@ -1,0 +1,12 @@
+﻿.povittable {border-bottom: 1px solid #CCC;border-left: 1px solid #CCC;}
+.povittable table {border-collapse: collapse;table-layout:fixed !important;}
+.povittable .pivot-layout table {table-layout: fixed !important;}
+.povittable table td {cursor: cell;overflow: hidden;padding:0px;word-break: keep-all;white-space: nowrap;}
+.povittable td.data-cell {font-size: 14px;padding: 5px !important;height: 30px;overflow: hidden;text-overflow: ellipsis;border: 1px solid #CCC;border-bottom-width: 0;border-left-width: 0;}
+.povittable .row-header-title td, .povittable .col-header-title td {text-align: center;}
+.povittable .row-header table,.povittable .col-header table,.povittable .row-data table,.povittable .col-data table {width: 100%;}
+.povittable .row-data, .povittable .col-data {vertical-align: top !important;}
+.povittable .col-data td.data-cell {color: #333 !important;}
+.povittable .col-data td.data-cell {text-align: right;}
+.povittable .col-header{width:25%;}
+.povittable .sort_handler {background: none;border: none;font-size: 14px;}
