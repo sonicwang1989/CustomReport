@@ -1,4 +1,4 @@
-﻿//递归字段分组
+//递归字段分组
 function recursion(d, fields, level) {
     var groups = d.groupBy(fields[level - 1]);
     $.each(groups, function (i, group) {
@@ -113,11 +113,11 @@ var CustomReport = function () {
     this.Selector = null;
     this.handle = {};
     //单元格宽度
-    this.CellWidth = "25%";
+    this.CellWidth = 120;
     //单元格高度
     this.CellHeight = 40;
     //宽度
-    this.Width = "100%";
+    this.Width = 1000;
     //高度
     this.Height = 600;
     this.OriginalWidth = 0;//临时数据的备份
@@ -194,6 +194,7 @@ var CustomReport = function () {
     //添加总计行
     this.AddTotalRow = function (data) {
         var self = this;
+
         if (self.ShowTotal == false) return data.children;
 
         var tmp = data.children.clone();
