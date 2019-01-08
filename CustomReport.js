@@ -1,4 +1,4 @@
-(function (window) {
+(function (w) {
     //递归字段分组
     var recursion = function (d, fields, level) {
         var groups = groupBy(d, fields[level - 1]);
@@ -320,12 +320,13 @@
             var rowsCount = self.Rows.length;
             var firstField = first(self.Rows);
             var lastField = last(self.Rows);
+            var headerRowSpan = self.Cols.length + self.Vals.length;
 
             //创建左上标题表
             (function () {
                 var rowHeaderTable = $("<table></table>");
                 $.each(self.Cols, function () {
-                    var tr = $("<tr></tr>");
+                    var tr = $("<tr class='row-header-title'></tr>");
                     var td = $("<td class='data-cell'></td>");
                     td.attr("colspan", rowsCount);
                     tr.append(td);
@@ -334,6 +335,7 @@
                 var tr = $("<tr class='row-header-title'></tr>");
                 $.each(self.Rows, function (i, item) {
                     var td = $("<td class='data-cell'></td>");
+                    td.attr("rowspan", headerRowSpan);
                     td.attr("data-field", item.value).html(item.text);
                     tr.append(td);
                 });
@@ -452,7 +454,7 @@
                         }
                     });
                 };
-                $.each(self.Cols, function () {
+                $.each(self.Cols, function (i) {
                     var tr = $("<tr class='col-header-title'></tr>");
                     colHeaderTable.append(tr);
                 });
@@ -486,6 +488,12 @@
                     });
                 }
 
+                // 只有当显示合计并且值字段只有一个时才显示右边的行合计列
+                if (self.Vals.length == 1 && self.ShowTotal) {
+                    colHeaderTable.find('tr.col-header-title:first').append('<td class="data-cell" rowspan="' + (self.Cols.length + self.Vals.length) + '">' + self.TotalText + '</td>');
+                    self.InnerColumns.push({ __index: self.InnerColumns.length, valueField: self.Vals[0].value, isTotalColumn: true });
+                }
+
                 self.Target.find("td.col-header .wrapper").append(colHeaderTable);
             })();
         };
@@ -504,20 +512,43 @@
                     var tr = $("<tr class='row-data-value'></tr>");
                     table.append(tr);
                     if (data.isTotalRow == true || data.isSubTotalRow == true) {
+                        var rowTotal = 0;
                         tr.addClass("total");
                         $.each(self.InnerColumns, function (i, col) {
-                            var value = self.CalcTotal(data.ref, col);
-                            value = self.FormatField(col, value);
+                            var value = 0;
+                            if (col.isTotalColumn) {
+                                // 行合计
+                                value = rowTotal;
+                                rowTotal = 0;
+                            }
+                            else {
+                                value = self.CalcTotal(data.ref, col);
+                                rowTotal += value;
+                                value = self.FormatField(col, value);
+                            }
                             var td = $("<td class='data-cell'></td>").html(value);
+                            if (col.isTotalColumn) td.addClass('total');
                             tr.append(td);
                         })
                         return;
                     }
                     else if (data.field.value == lastField.value) {
+                        var rowTotal = 0;
                         $.each(self.InnerColumns, function (i, col) {
-                            var value = self.GetValue(data, col);
-                            value = self.FormatField(col, value);
+                            var value = 0;
+                            if (col.isTotalColumn) {
+                                // 行合计
+                                value = rowTotal;
+                                rowTotal = 0;
+                            }
+                            else {
+                                value = self.GetValue(data, col);
+                                rowTotal += value;
+                                value = self.FormatField(col, value);
+                            }
+
                             var td = $("<td class='data-cell'></td>").html(value);
+                            if (col.isTotalColumn) td.addClass('total');
                             tr.append(td);
                         })
                     }
@@ -593,7 +624,8 @@
             //如果表格的长宽小于给定的长宽，则进行适当的缩放
             if (self.AutoFit) {
                 var rowCellsCount = self.Rows.length + colspanTotal;//左侧和右侧单元格的总数量
-                var rowCellWidth = rowCellsCount * self.CellWidth;//左侧和右侧单元格的总宽度
+                var rowCellWidth = 0;//左侧和右侧单元格的总宽度
+                rowCellWidth = rowCellsCount * self.CellWidth
                 if (rowCellWidth < self.Width) {
                     self.CellWidth = Math.round(self.Width / rowCellsCount);
                 }
@@ -734,5 +766,5 @@
         };
     };
 
-    window.CustomReport = CustomReport;
+    w.CustomReport = CustomReport;
 })(window);
