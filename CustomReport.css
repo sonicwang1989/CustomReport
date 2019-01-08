@@ -28,9 +28,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         border: 1px solid #4A99E8;
-    }
-
-    .povittable .row-header-title td, .povittable .col-header-title td {
+        vertical-align: middle;
     }
 
     .povittable .row-header table,
@@ -48,12 +46,28 @@
             color: #333 !important;
         }
 
+        .povittable .row-data .row-header-text:first-child td{
+            border-top-width:0;
+        }
+
+        .povittable .col-data .row-data-value:first-child td{
+            border-top-width:0;
+        }
+
 tr.row-header-title > td, tr.col-header-title > td, tr.row-header-text > td {
     background: #D1E5F9;
 }
 
+.col-header-title td:first-child,.row-data-value td:first-child{
+    border-left-width: 0;
+}
+
 .col-data td.data-cell {
     text-align: right;
+}
+
+.povittable .row-header,.povittable .col-header{
+    background-color: transparent;
 }
 
 .wrapper {
@@ -64,7 +78,7 @@ tr.row-header-title > td, tr.col-header-title > td, tr.row-header-text > td {
         overflow: hidden;
     }
 
-.total td {
+.total td,td.total {
     background: #FFFFE1 !important;
 }
 
